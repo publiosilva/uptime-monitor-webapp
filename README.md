@@ -1,75 +1,40 @@
-# React + TypeScript + Vite
+# Uptime Monitor Webapp
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Dashboard for the self-hosted uptime monitor. Sign in, add HTTP monitors, and watch live status, 24-hour uptime, latency, and recent checks.
 
-Currently, two official plugins are available:
+The API and worker live in [uptime-monitor](https://github.com/publiosilva/uptime-monitor). Start Postgres, the API (`http://localhost:3333`), and the worker before using this app.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+![Uptime Monitor dashboard](docs/dashboard.gif)
 
-## React Compiler
+## Technologies
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React 19 + Vite
+- Tailwind CSS
+- Apollo Client for GraphQL
+- Recharts for latency history
+- React Hook Form + Zod for forms
 
-## Expanding the ESLint configuration
+## Prerequisites
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- [Node.js](https://nodejs.org/) 22+ and [pnpm](https://pnpm.io/)
+- A running [uptime-monitor](https://github.com/publiosilva/uptime-monitor) API on port `3333` and worker on port `3334`
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Local setup
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+git clone https://github.com/publiosilva/uptime-monitor-webapp.git
+cd uptime-monitor-webapp
+pnpm install
+pnpm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Vite proxies `/api` and `/query` to `http://localhost:3333` during development. Live up/down events come from the worker WebSocket at `ws://localhost:3334/ws/states`.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Scripts
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+pnpm run dev       # start the dev server
+pnpm run build     # typecheck and production build
+pnpm run preview   # serve the production build
+pnpm run lint
 ```
